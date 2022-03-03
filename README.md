@@ -1,5 +1,9 @@
 # fel-lar-turtlebot
 
+
+## Robot tutorial
+https://gitlab.fel.cvut.cz/robolab/lar/-/blob/master/README.md
+
 ## 1. Connect to robot
 
 ```sh
@@ -26,7 +30,7 @@ source /opt/ros/lar/setup.bash
 
 ```sh
 roslaunch robolab_turtlebot bringup_realsense_D435.launch
-```
+````
 
 
 ## 5. Start app
