@@ -17,6 +17,9 @@ ssh -X [username]@[turtleIP]
 ## 2. Enter singularity
 
 ```sh
+# mount local partition, this might result in error if already mounted
+mount /local
+
 singularity shell /opt/singularity/robolab/robolab_noetic_2022-02-24
 ```
 
