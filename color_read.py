@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 
 from robolab_turtlebot import Turtlebot, detector
 
+import numpy as np
+
 WINDOW = 'camera'
 
 def get_normalized_bgr(b, g, r):
@@ -14,83 +16,97 @@ def get_normalized_bgr(b, g, r):
     norm_b = b/(r+g+b)
     return norm_b, norm_g, norm_r
 
+def remove_small_components(color_mask):
+    n_comp, output, stats, centroids = cv2.connectedComponentsWithStats(color_mask, connectivity=8)
+
+    sizes = stats[1:, -1] 
+    n_comp = n_comp - 1
+
+    min_size = 1000  
+
+    new = np.zeros((output.shape))
+    new_n_components = 0
+    new_centroids = []
+    for i in range(0, n_comp):
+        if sizes[i] >= min_size:
+            new_centroids.append(centroids[i+1])
+            new[output == i + 1] = 255
+            new_n_components += 1
+    return new, new_n_components, new_centroids
+
+
+def draw_crosshair(image, crosshair_row, crosshair_col, R, G, B):
+    for row in range(0, image.shape[0]):
+        for col in range(0, image.shape[1]):
+            if abs(row - crosshair_row) < 1 or abs (col - crosshair_col) < 1:
+                image[row][col][0] = B
+                image[row][col][1] = G
+                image[row][col][2] = R
+    return image
+
 def main():
 
     turtle = Turtlebot(rgb=True, pc=True)
     cv2.namedWindow(WINDOW)
 
 
-    show_crosshair = 1
+    show_crosshair = 0
 
     while not turtle.is_shutting_down():
-        # get point cloud
+
         image = turtle.get_rgb_image()
 
         # wait for image to be ready
         if image is None:
             continue
 
+        midrow = image.shape[0] / 2
+        midcol = image.shape[1] / 2
+
         blured_image = cv2.blur(image, (10,10))
+
+        if show_crosshair == 1:
+            image = draw_crosshair(image, midrow, midcol, 255, 255, 0)
+        
+
+        #print("BGR: {}\nHSV: {}".format(image[int(midrow)][int(midcol)], hsv[int(midrow)][int(midcol)]))
+
+        
 
         hsv = cv2.cvtColor(blured_image, cv2.COLOR_BGR2HSV)
 
-        blue_mask = cv2.inRange(hsv,(94, 180, 50), (99, 255, 255) ) # blue
-        red_mask = cv2.inRange(hsv,(0, 170, 20), (7, 255, 255) ) # red
+        red_mask = cv2.inRange(hsv,(0, 170, 20), (10, 255, 255) ) # red
         green_mask = cv2.inRange(hsv,(40, 50, 50), (65, 255, 255) ) # green
+        blue_mask = cv2.inRange(hsv,(92, 180, 50), (100, 255, 255) ) # blue
 
-        midrow = image.shape[0] / 2
-        midcol = image.shape[1] / 2
-        print("-------------------")
+        red_filtered, red_count, red_centroids = remove_small_components(red_mask)
+        green_filtered, green_count, green_centroids = remove_small_components(green_mask)
+        blue_filtered, blue_count, blue_centroids = remove_small_components(blue_mask)
 
-        #print("GBR: {}\nHSV: {}".format(image[int(midrow)][int(midcol)], hsv[int(midrow)][int(midcol)]))
+        for i in range(0, red_count):
+            image = draw_crosshair(image, int(red_centroids[i][1]), int(red_centroids[i][0]), 255, 0, 0)
 
-        #contours, hierarchy = cv2.findContours(green_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        #print(len(contours))
-        
-        # out = cv2.connectedComponentsWithStats(bin_mask.astype(np.uint8))
+        for i in range(0, green_count):
+            image = draw_crosshair(image, int(green_centroids[i][1]), int(green_centroids[i][0]), 0, 255, 0)
 
-        '''
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (4,4))
-        green_rects = cv2.morphologyEx(green_mask, cv2.MORPH_OPEN, kernel, iterations=1)
-        red_rects = cv2.morphologyEx(red_mask, cv2.MORPH_OPEN, kernel, iterations=2)
-        blue_rects = cv2.morphologyEx(blue_mask, cv2.MORPH_OPEN, kernel, iterations=2)
-        '''
-        '''
-        green_rects = cv2.blur(green_rects, (3,3))
-        red_rects = cv2.blur(red_rects, (3,3))
-        blue_rects = cv2.blur(blue_rects, (3,3))
-        '''
+        for i in range(0, blue_count):
+            image = draw_crosshair(image, int(blue_centroids[i][1]), int(blue_centroids[i][0]), 0, 0, 255)
 
-        contours = []
-        green_contours, g_hierarchy = cv2.findContours(green_rects, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        red_contours, r_hierarchy = cv2.findContours(red_rects, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        blue_contours, b_hierarchy = cv2.findContours(blue_rects, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        
-        
+        print("-------------------------------")
+        print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
 
-        
-        green_found = len(green_contours)
-        red_found = len(red_contours)
-        blue_found = len(blue_contours)
-        print("Found\n{} green objects\n{} red objects\n{} blue objects".format(green_found, red_found, blue_found))
+        #red_contours, r_hierarchy = cv2.findContours(red_filtered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        #green_contours, g_hierarchy = cv2.findContours(green_filtered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        #blue_contours, b_hierarchy = cv2.findContours(blue_filtered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-
-    
-        if show_crosshair == 1:
-            for row in range(0, image.shape[0]):
-                for col in range(0, image.shape[1]):
-                    if abs(row - midrow) < 1 or abs (col - midcol) < 1:
-                        image[row][col][0] = 0
-                        image[row][col][1] = 255
-                        image[row][col][2] = 255
 
 
         # show image
         cv2.imshow(WINDOW, image)
-        #cv2.imshow("flex", flex_mask)
-        cv2.imshow("blue", blue_mask)
-        cv2.imshow("red", red_mask)
-        cv2.imshow("green", green_mask)
+
+        #cv2.imshow("blue", blue fitlered)
+        #cv2.imshow("red", red_filtered)
+        cv2.imshow("green", green_filtered)
         cv2.waitKey(1)
 
 
