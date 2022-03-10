@@ -4,6 +4,9 @@
 ## Robot tutorial
 https://gitlab.fel.cvut.cz/robolab/lar/-/blob/master/README.md
 
+## Robot documentation
+https://gitlab.fel.cvut.cz/robolab/robolab_turtlebot
+
 ## 1. Connect to robot
 
 ```sh
@@ -20,7 +23,7 @@ ssh -X [username]@[turtleIP]
 # mount local partition, this might result in error if already mounted
 mount /local
 
-singularity shell /opt/singularity/robolab/robolab_noetic_2022-02-24
+singularity shell /local/robolab_lar_noetic_2022.simg
 ```
 
 ## 3. Source ROS environment
