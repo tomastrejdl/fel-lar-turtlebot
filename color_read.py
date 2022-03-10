@@ -74,7 +74,7 @@ def main():
         hsv = cv2.cvtColor(blured_image, cv2.COLOR_BGR2HSV)
 
         red_mask = cv2.inRange(hsv,(0, 170, 20), (10, 255, 255) ) # red
-        green_mask = cv2.inRange(hsv,(40, 50, 50), (65, 255, 255) ) # green
+        green_mask = cv2.inRange(hsv,(30, 50, 50), (80, 255, 255) ) # green
         blue_mask = cv2.inRange(hsv,(92, 180, 50), (100, 255, 255) ) # blue
 
         red_filtered, red_count, red_centroids = remove_small_components(red_mask)
