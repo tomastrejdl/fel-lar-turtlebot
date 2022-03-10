@@ -8,6 +8,9 @@ from robolab_turtlebot import Turtlebot, detector
 
 import numpy as np
 
+from depth import euclid_norm
+from depth import pc_to_distance
+
 WINDOW = 'camera'
 
 def get_normalized_bgr(b, g, r):
@@ -55,9 +58,9 @@ def main():
     while not turtle.is_shutting_down():
 
         image = turtle.get_rgb_image()
-
+        pc = turtle.get_point_cloud()
         # wait for image to be ready
-        if image is None:
+        if image is None or pc is None:
             continue
 
         midrow = image.shape[0] / 2
@@ -67,11 +70,6 @@ def main():
 
         if show_crosshair == 1:
             image = draw_crosshair(image, midrow, midcol, 255, 255, 0)
-        
-
-        #print("BGR: {}\nHSV: {}".format(image[int(midrow)][int(midcol)], hsv[int(midrow)][int(midcol)]))
-
-        
 
         hsv = cv2.cvtColor(blured_image, cv2.COLOR_BGR2HSV)
 
@@ -85,23 +83,24 @@ def main():
 
         for i in range(0, red_count):
             image = draw_crosshair(image, int(red_centroids[i][1]), int(red_centroids[i][0]), 255, 0, 0)
+            print("Red centroid n {} is {} far".format(i, pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))))
 
         for i in range(0, green_count):
             image = draw_crosshair(image, int(green_centroids[i][1]), int(green_centroids[i][0]), 0, 255, 0)
+            print("Green centroid n {} is {} far".format(i, pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))))
 
         for i in range(0, blue_count):
             image = draw_crosshair(image, int(blue_centroids[i][1]), int(blue_centroids[i][0]), 0, 0, 255)
+            print("Blue centroid n {} is {} far".format(i, pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))))
 
         print("-------------------------------")
         print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
 
-        #red_contours, r_hierarchy = cv2.findContours(red_filtered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        #green_contours, g_hierarchy = cv2.findContours(green_filtered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        #blue_contours, b_hierarchy = cv2.findContours(blue_filtered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        
 
 
 
-        # show image
+
         cv2.imshow(WINDOW, image)
 
         #cv2.imshow("blue", blue fitlered)
