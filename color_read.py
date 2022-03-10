@@ -83,15 +83,15 @@ def main():
 
         for i in range(0, red_count):
             image = draw_crosshair(image, int(red_centroids[i][1]), int(red_centroids[i][0]), 255, 0, 0)
-            print("Red centroid n {} is {} far".format(i, pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))))
+            print("Red centroid n {} is {:.2f} far".format(i, pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))))
 
         for i in range(0, green_count):
             image = draw_crosshair(image, int(green_centroids[i][1]), int(green_centroids[i][0]), 0, 255, 0)
-            print("Green centroid n {} is {} far".format(i, pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))))
+            print("Green centroid n {} is {:.2f} far".format(i, pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))))
 
         for i in range(0, blue_count):
             image = draw_crosshair(image, int(blue_centroids[i][1]), int(blue_centroids[i][0]), 0, 0, 255)
-            print("Blue centroid n {} is {} far".format(i, pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))))
+            print("Blue centroid n {} is {:.2f} far".format(i, pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))))
 
         print("-------------------------------")
         print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
