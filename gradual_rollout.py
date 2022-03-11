@@ -8,25 +8,30 @@ rate = Rate(10)
 isRunning = True
 
 # Names bumpers and events
-bumper_names = ['LEFT', 'CENTER', 'RIGHT']
-state_names = ['RELEASED', 'PRESSED']
+bumper_names = ["LEFT", "CENTER", "RIGHT"]
+state_names = ["RELEASED", "PRESSED"]
+
 
 def goForward():
-    turtle.cmd_velocity(linear = 0.1)
+    turtle.cmd_velocity(linear=0.1)
+
 
 def forceStop():
-    print('FORCE STOPPING')
+    print("FORCE STOPPING")
     global isRunning
     isRunning = False
-    turtle.cmd_velocity(linear = 0)
-    turtle.cmd_velocity(angular = 0)
+    turtle.cmd_velocity(linear=0)
+    turtle.cmd_velocity(angular=0)
     quit()
 
+
 def rotateLeft():
-    turtle.cmd_velocity(angular = 0.4)
+    turtle.cmd_velocity(angular=0.4)
+
 
 def rotateRight():
-    turtle.cmd_velocity(angular = -0.4)
+    turtle.cmd_velocity(angular=-0.4)
+
 
 def bumper_cb(msg):
     """Bumber callback."""
@@ -37,10 +42,11 @@ def bumper_cb(msg):
     state = state_names[msg.state]
 
     # Print the event
-    print('{} bumper {}'.format(bumper, state))
-    if state == 'PRESSED':
-        print('Bumper pressed Stopping')
+    print("{} bumper {}".format(bumper, state))
+    if state == "PRESSED":
+        print("Bumper pressed Stopping")
         forceStop()
+
 
 def drive1m():
     t = get_time()
@@ -49,25 +55,32 @@ def drive1m():
         print(turtle.get_odometry())
         rate.sleep()
 
+
 def rotate180():
     currentAngle = turtle.get_odometry()[2]
-    while not turtle.is_shutting_down() and isRunning and currentAngle > -0.1 and  currentAngle <= math.pi :
+    while (
+        not turtle.is_shutting_down()
+        and isRunning
+        and currentAngle > -0.1
+        and currentAngle <= math.pi
+    ):
         rotateLeft()
         print(turtle.get_odometry())
         rate.sleep()
         currentAngle = turtle.get_odometry()[2]
 
+
 def main():
-    print('Starting...')
+    print("Starting...")
     turtle.register_bumper_event_cb(bumper_cb)
     turtle.reset_odometry()
 
     while not turtle.is_shutting_down() and isRunning:
         drive1m()
         rotate180()
-    
-    turtle.cmd_velocity(linear = 0)
+
+    turtle.cmd_velocity(linear=0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
