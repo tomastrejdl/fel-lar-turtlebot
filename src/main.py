@@ -39,14 +39,14 @@ def next_tick(state, next_gate_color):
     if count == 2:
         # If there are 2 pipes in the image
         # find the center point between the two pipes
-        image, center_row, center_col = find_center(centroids)
+        image, center_col, center_row = find_center(image, centroids)
 
-        if abs(center_col - 320) < 10:
+        if abs(center_col - MIDCOL) < 30:
             # If we're close to the center move forward
             state = MOVE_FORWARD
         else:
             # If we're NOT close to the center rotate until we're close
-            if center_col > 320:
+            if center_col > MIDCOL:
                 state = ROTATE_RIGHT
             else:
                 state = ROTATE_LEFT
@@ -81,6 +81,7 @@ def main():
 
     while not turtle.is_shutting_down() and isRunning:
         # Look for any gate and update state
+        #print("{}, {} = next_tick({}, {})".format(state, next_gate_color, state, next_gate_color))
         state, next_gate_color = next_tick(state, next_gate_color)
 
         # Update velocity based on current state
@@ -92,6 +93,7 @@ def main():
             turtle.cmd_velocity(angular=-0.4)
         if state == MOVE_FORWARD:
             turtle.cmd_velocity(linear=0.1)
+
 
 
     # Stop moving before exiting program
