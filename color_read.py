@@ -83,15 +83,21 @@ def main():
 
         for i in range(0, red_count):
             image = draw_crosshair(image, int(red_centroids[i][1]), int(red_centroids[i][0]), 255, 0, 0)
-            print("Red centroid n {} is {:.2f} far".format(i, pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))))
+            dist = pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))
+            image = cv2.putText(image, '{:.2f}'.format(dist), (int(red_centroids[i][1]), int(red_centroids[i][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+            print("Red centroid n {} is {:.2f} far".format(i, dist))
 
         for i in range(0, green_count):
             image = draw_crosshair(image, int(green_centroids[i][1]), int(green_centroids[i][0]), 0, 255, 0)
-            print("Green centroid n {} is {:.2f} far".format(i, pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))))
+            dist = pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))
+            image = cv2.putText(image, '{:.2f}'.format(dist), (int(green_centroids[i][1]), int(green_centroids[i][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+            print("Green centroid n {} is {:.2f} far".format(i, dist))
 
         for i in range(0, blue_count):
             image = draw_crosshair(image, int(blue_centroids[i][1]), int(blue_centroids[i][0]), 0, 0, 255)
-            print("Blue centroid n {} is {:.2f} far".format(i, pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))))
+            dist = pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))
+            image = cv2.putText(image, '{:.2f}'.format(dist), (int(blue_centroids[i][1]), int(blue_centroids[i][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+            print("Blue centroid n {} is {:.2f} far".format(i, dist))
 
         print("-------------------------------")
         print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
