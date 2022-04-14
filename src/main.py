@@ -4,6 +4,7 @@ from robolab_turtlebot import Turtlebot
 import numpy as np
 import cv2
 
+from distance import *
 from constants import *
 from partitioning import *
 
@@ -61,10 +62,16 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
     
     if state == GO_THROUGH_GATE and previous_state == GO_THROUGH_GATE:
         go_through_gate_timeout -= 1
-        print("go_through_gate_timeout: ", go_through_gate_timeout)
 
     if state == GO_THROUGH_GATE and go_through_gate_timeout <= 0:
-        state = FINISH
+        if next_gate_color == RED:
+            next_gate_color = BLUE
+        elif next_gate_color == BLUE:
+            next_gate_color = RED
+        else:
+            next_gate_color = find_closest_gate_color()
+        
+        state = LOOKING_FOR_GATE
 
     print(state)
     print("-------------------------------")
@@ -83,8 +90,6 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
 
 def main():
     print("Starting...")
-
-
 
     turtle.register_bumper_event_cb(bumper_callback)
     turtle.reset_odometry()
