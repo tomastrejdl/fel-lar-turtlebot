@@ -36,7 +36,7 @@ def get_objects_for_color(image, color):
 
     return image, filtered, count, centroids
 
-def find_center(centroids):
+def find_center(image, centroids):
     center_row = int(min(centroids[0][0], centroids[1][0]) + abs(centroids[0][0] - centroids[1][0]) / 2)
     center_col = int(min(centroids[0][1], centroids[1][1]) + abs(centroids[0][1] - centroids[1][1]) / 2)
     image = draw_center(image, center_row, center_col)

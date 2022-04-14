@@ -25,7 +25,9 @@ def bumper_callback(msg):
         quit()
 
 # Each tick an image is retrieved from robot, analyzed and state is updated accordingly
-def next_tick(state, next_gate_color):
+def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
+    print("TICK: ", previous_state, end=" --> ")
+    state = previous_state
     image = turtle.get_rgb_image()
     # wait for image to be ready
     if image is None: return
@@ -52,8 +54,19 @@ def next_tick(state, next_gate_color):
                 state = ROTATE_LEFT
     else:
         # If there are NOT 2 pipes in the image, keep looking
-        state = LOOKING_FOR_GATE
+        if previous_state != LOOKING_FOR_GATE:
+            state = GO_THROUGH_GATE
+        else:
+            state = LOOKING_FOR_GATE
+    
+    if state == GO_THROUGH_GATE and previous_state == GO_THROUGH_GATE:
+        go_through_gate_timeout -= 1
+        print("go_through_gate_timeout: ", go_through_gate_timeout)
 
+    if state == GO_THROUGH_GATE and go_through_gate_timeout <= 0:
+        state = FINISH
+
+    print(state)
     print("-------------------------------")
     print("Found {} {} objects".format(count, next_gate_color))
     if center_row != 0 and center_col != 0:
@@ -65,11 +78,14 @@ def next_tick(state, next_gate_color):
     cv2.imshow(WINDOW, image)
     cv2.waitKey(1)
 
-    return state, next_gate_color
+    return state, next_gate_color, go_through_gate_timeout
 
 
 def main():
     print("Starting...")
+
+
+
     turtle.register_bumper_event_cb(bumper_callback)
     turtle.reset_odometry()
 
@@ -77,24 +93,33 @@ def main():
 
     # Default robot state is LOOKING_FOR_GATE
     state = LOOKING_FOR_GATE
+    previous_state = LOOKING_FOR_GATE
     next_gate_color = GREEN
 
-    while not turtle.is_shutting_down() and isRunning:
+    go_through_gate_timeout = 1000
+
+    while not turtle.is_shutting_down() and isRunning and state != FINISH:
         # Look for any gate and update state
         #print("{}, {} = next_tick({}, {})".format(state, next_gate_color, state, next_gate_color))
-        state, next_gate_color = next_tick(state, next_gate_color)
+        
+        previous_state = state
+        state, next_gate_color,go_through_gate_timeout = next_tick(previous_state, next_gate_color, go_through_gate_timeout)
 
         # Update velocity based on current state
         if state == LOOKING_FOR_GATE:
-            turtle.cmd_velocity(angular=0.2)
+            turtle.cmd_velocity(angular=0.4)
         if state == ROTATE_LEFT:
             turtle.cmd_velocity(angular=0.4)
         if state == ROTATE_RIGHT:
             turtle.cmd_velocity(angular=-0.4)
         if state == MOVE_FORWARD:
             turtle.cmd_velocity(linear=0.1)
+        if state == GO_THROUGH_GATE:
+            turtle.cmd_velocity(linear=0.1)
 
 
+    # Play finish sound
+    turtle.play_sound(1)
 
     # Stop moving before exiting program
     turtle.cmd_velocity(linear=0)
