@@ -82,24 +82,38 @@ def main():
         blue_filtered, blue_count, blue_centroids = remove_small_components(blue_mask)
 
        
+        '''
         for i in range(0, red_count):
             image = draw_crosshair(image, int(red_centroids[i][1]), int(red_centroids[i][0]), 255, 0, 0)
             x, y, z, dist = pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))
             image = cv2.putText(image, 'R{}:{:.2f}[{} {} {}]'.format(i+1, dist, x, y, z), (int(red_centroids[i][0]), int(red_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             #print("Red centroid n {} is {:.2f} far".format(i, dist))
-        
+        '''
         for i in range(0, green_count):
             image = draw_crosshair(image, int(green_centroids[i][1]), int(green_centroids[i][0]), 0, 255, 0)
             x, y, z, dist = pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))
-            image = cv2.putText(image, 'G{}:{:.2f}[{:.1f} {:.1f} {:.1f}]'.format(i+1, dist, x, y, z), (int(green_centroids[i][0]), int(green_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+            #image = cv2.putText(image, 'G{}:{:.2f}[{:.1f} {:.1f} {:.1f}]'.format(i+1, dist, x, y, z), (int(green_centroids[i][0]), int(green_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             #print("Green centroid n {} is {:.2f} far".format(i, dist))
-        
+        '''
         for i in range(0, blue_count):
             image = draw_crosshair(image, int(blue_centroids[i][1]), int(blue_centroids[i][0]), 0, 0, 255)
             x, y, z, dist = pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))
             image = cv2.putText(image, 'B{}:{:.2f}[{:.1f} {:.1f} {:.1f}]'.format(i+1, dist, x, y, z), (int(blue_centroids[i][0]), int(blue_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             #print("Blue centroid n {} is {:.2f} far".format(i, dist))
-        
+        '''
+        print("-------------------------------")
+        #print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
+
+        if (green_count == 2):
+            x1, y1, z1, dist1 = pc_to_distance(pc, int(green_centroids[0][1]), int(green_centroids[0][0]))
+            x2, y2, z2, dist2 = pc_to_distance(pc, int(green_centroids[1][1]), int(green_centroids[1][0]))
+            print("G1:[{}][{}], G2: [{}][{}]".format(x1, z1, x2, z2))
+            angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.5)
+            print(angle1, dist, angle2)
+            rotate_by_angle(turtle, "LEFT", angle1)
+            go_distance(turtle, dist, 0.1)
+            rotate_by_angle(turtle, "RIGHT", angle2)
+
 
         print("-------------------------------")
         print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
