@@ -7,6 +7,11 @@ import cv2
 from distance import *
 from constants import *
 from partitioning import *
+from rotate_translate import *
+from angle_dist_angle import *
+
+end_angle = 0
+end_distance = 0
 
 isRunning = True
 turtle = Turtlebot(rgb=True, pc=True)
@@ -31,6 +36,8 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
     print("TICK: ", previous_state, end=" --> ")
     state = previous_state
     image = turtle.get_rgb_image()
+    pc = turtle.get_point_cloud()
+
     # wait for image to be ready
     if image is None: return
 
@@ -39,40 +46,90 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
 
     image, filtered, count, centroids = get_objects_for_color(image, next_gate_color)
 
+    global end_angle
+    global end_distance
+
     center_row = center_col = 0
+
+    if state == MOVE_TO_GATE:
+        x, y, angle = turtle.get_odometry()
+        print("x: ", x)
+        print("end_distance:", end_distance)
+        
+        if x > end_distance:
+            state = FINISH
+
+    if state == ROTATE_TOWARD_GATE:
+        x, y, angle = turtle.get_odometry()
+        print("angle: ", angle)
+        print("end_angle: ", end_angle)
+        
+        if angle > end_angle:
+            state = MOVE_TO_GATE
+            turtle.reset_odometry()
+            turtle.wait_for_odometry()
+
+
     if count == 2:
+        if state == LOOKING_FOR_GATE:
+            x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+            x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
+
+            if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
+                print("G1:[{}][{}], G2: [{}][{}]".format(x1, z1, x2, z2))
+                angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
+                print(angle1, dist, angle2)
+
+                turtle.reset_odometry()
+                turtle.wait_for_odometry()
+                x, y, angle = turtle.get_odometry()
+
+                
+                end_angle = angle1
+                end_distance = dist
+
+                state = ROTATE_TOWARD_GATE
+
+       
+            
+        
+
+
+
+
+
         # If there are 2 pipes in the image
         # find the center point between the two pipes
-        image, center_col, center_row = find_center(image, centroids)
+    #     image, center_col, center_row = find_center(image, centroids)
 
-        if abs(center_col - MIDCOL) < 30:
-            # If we're close to the center move forward
-            state = MOVE_FORWARD
-        else:
-            # If we're NOT close to the center rotate until we're close
-            if center_col > MIDCOL:
-                state = ROTATE_RIGHT
-            else:
-                state = ROTATE_LEFT
-    else:
-        # If there are NOT 2 pipes in the image, keep looking
-        if previous_state != LOOKING_FOR_GATE:
-            state = GO_THROUGH_GATE
-        else:
-            state = LOOKING_FOR_GATE
+    #     if abs(center_col - MIDCOL) < 30:
+    #         # If we're close to the center move forward
+    #         state = MOVE_FORWARD
+    #     else:
+    #         # If we're NOT close to the center rotate until we're close
+    #         if center_col > MIDCOL:
+    #             state = ROTATE_RIGHT
+    #         else:
+    #             state = ROTATE_LEFT
+    # else:
+    #     # If there are NOT 2 pipes in the image, keep looking
+    #     if previous_state != LOOKING_FOR_GATE:
+    #         state = GO_THROUGH_GATE
+    #     else:
+    #         state = LOOKING_FOR_GATE
     
-    if state == GO_THROUGH_GATE and previous_state == GO_THROUGH_GATE:
-        go_through_gate_timeout -= 1
+    # if state == GO_THROUGH_GATE and previous_state == GO_THROUGH_GATE:
+    #     go_through_gate_timeout -= 1
 
-    if state == GO_THROUGH_GATE and go_through_gate_timeout <= 0:
-        if next_gate_color == RED:
-            next_gate_color = BLUE
-        elif next_gate_color == BLUE:
-            next_gate_color = RED
-        else:
-            next_gate_color = find_closest_gate_color(image)
+    # if state == GO_THROUGH_GATE and go_through_gate_timeout <= 0:
+    #     if next_gate_color == RED:
+    #         next_gate_color = BLUE
+    #     elif next_gate_color == BLUE:
+    #         next_gate_color = RED
+    #     else:
+    #         next_gate_color = find_closest_gate_color(image)
         
-        state = LOOKING_FOR_GATE
+    #     state = LOOKING_FOR_GATE
 
     print(state)
     print("-------------------------------")
@@ -114,7 +171,7 @@ def main():
         # Update velocity based on current state
         if motors_enabled:
             if state == LOOKING_FOR_GATE:
-                turtle.cmd_velocity(angular=0.4)
+                turtle.cmd_velocity(angular=0.3)
             if state == ROTATE_LEFT:
                 turtle.cmd_velocity(angular=0.4)
             if state == ROTATE_RIGHT:
@@ -123,6 +180,11 @@ def main():
                 turtle.cmd_velocity(linear=0.1)
             if state == GO_THROUGH_GATE:
                 turtle.cmd_velocity(linear=0.1)
+
+            if state == ROTATE_TOWARD_GATE:
+                turtle.cmd_velocity(angular=0.2)
+            if state == MOVE_TO_GATE:
+                turtle.cmd_velocity(linear=0.2)
 
 
     # Play finish sound

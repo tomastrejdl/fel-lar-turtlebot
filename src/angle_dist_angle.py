@@ -38,7 +38,7 @@ def get_directions(x1,y1,x2,y2,dist_from_gate):
     B = [(x1+x2)/2,(y1+y2)/2] # gate center
     V = [(y1-y2),-(x1-x2)] # orthogonal vector to vector from one pillar to second pillar NORMALIZE THIS SHIT
     V[0] = (V[0]/(V[0]**2+V[1]**2)**(1/2))*dist_from_gate #
-    V[1] = (V[1] / (V[0] * 2 + V[1] * 2) ** (1 / 2))*dist_from_gate
+    V[1] = (V[1] / (V[0] ** 2 + V[1] ** 2) ** (1 / 2))*dist_from_gate
     c1 = [B[0]+V[0],B[1]+V[1]] #
     c2 = [B[0]-V[0],B[1]-V[1]] #
     if c1[0]**2+c1[1]**2>c2[0]**2+c2[1]**2:
@@ -54,7 +54,7 @@ def get_directions(x1,y1,x2,y2,dist_from_gate):
     angle1 = math.degrees(math.atan2(C[1],C[0]))
     vector_angle = math.degrees(math.atan2(v[1],v[0]))
 
-    distance = math.sqrt(C[0] * 2 + C[1] * 2)
+    distance = math.sqrt(C[0] ** 2 + C[1] ** 2)
 
     angle1 = -(angle1 - 90)
     vector_angle = vector_angle -90
@@ -62,4 +62,4 @@ def get_directions(x1,y1,x2,y2,dist_from_gate):
     final_angle = -(vector_angle - angle1)
 
 
-    return angle1, distance, vector_angle, final_angle
+    return math.radians(angle1), distance, math.radians(final_angle)
