@@ -11,6 +11,7 @@ from partitioning import *
 isRunning = True
 turtle = Turtlebot(rgb=True, pc=True)
 
+motors_enabled = True
 
 def bumper_callback(msg):
     bumper_name = BUMPER_NAMES[msg.bumper] # msg.bumper stores the id of bumper 0:LEFT, 1:CENTER, 2:RIGHT
@@ -69,7 +70,7 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
         elif next_gate_color == BLUE:
             next_gate_color = RED
         else:
-            next_gate_color = find_closest_gate_color()
+            next_gate_color = find_closest_gate_color(image)
         
         state = LOOKING_FOR_GATE
 
@@ -111,16 +112,17 @@ def main():
         state, next_gate_color,go_through_gate_timeout = next_tick(previous_state, next_gate_color, go_through_gate_timeout)
 
         # Update velocity based on current state
-        if state == LOOKING_FOR_GATE:
-            turtle.cmd_velocity(angular=0.4)
-        if state == ROTATE_LEFT:
-            turtle.cmd_velocity(angular=0.4)
-        if state == ROTATE_RIGHT:
-            turtle.cmd_velocity(angular=-0.4)
-        if state == MOVE_FORWARD:
-            turtle.cmd_velocity(linear=0.1)
-        if state == GO_THROUGH_GATE:
-            turtle.cmd_velocity(linear=0.1)
+        if motors_enabled:
+            if state == LOOKING_FOR_GATE:
+                turtle.cmd_velocity(angular=0.4)
+            if state == ROTATE_LEFT:
+                turtle.cmd_velocity(angular=0.4)
+            if state == ROTATE_RIGHT:
+                turtle.cmd_velocity(angular=-0.4)
+            if state == MOVE_FORWARD:
+                turtle.cmd_velocity(linear=0.1)
+            if state == GO_THROUGH_GATE:
+                turtle.cmd_velocity(linear=0.1)
 
 
     # Play finish sound
