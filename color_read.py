@@ -81,23 +81,25 @@ def main():
         green_filtered, green_count, green_centroids = remove_small_components(green_mask)
         blue_filtered, blue_count, blue_centroids = remove_small_components(blue_mask)
 
+       
         for i in range(0, red_count):
             image = draw_crosshair(image, int(red_centroids[i][1]), int(red_centroids[i][0]), 255, 0, 0)
-            dist = pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))
-            image = cv2.putText(image, '{:.2f}'.format(dist), (int(red_centroids[i][1]), int(red_centroids[i][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
-            print("Red centroid n {} is {:.2f} far".format(i, dist))
-
+            x, y, z, dist = pc_to_distance(pc, int(red_centroids[i][1]), int(red_centroids[i][0]))
+            image = cv2.putText(image, 'R{}:{:.2f}[{} {} {}]'.format(i+1, dist, x, y, z), (int(red_centroids[i][0]), int(red_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+            #print("Red centroid n {} is {:.2f} far".format(i, dist))
+        
         for i in range(0, green_count):
             image = draw_crosshair(image, int(green_centroids[i][1]), int(green_centroids[i][0]), 0, 255, 0)
-            dist = pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))
-            image = cv2.putText(image, '{:.2f}'.format(dist), (int(green_centroids[i][1]), int(green_centroids[i][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
-            print("Green centroid n {} is {:.2f} far".format(i, dist))
-
+            x, y, z, dist = pc_to_distance(pc, int(green_centroids[i][1]), int(green_centroids[i][0]))
+            image = cv2.putText(image, 'G{}:{:.2f}[{:.1f} {:.1f} {:.1f}]'.format(i+1, dist, x, y, z), (int(green_centroids[i][0]), int(green_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+            #print("Green centroid n {} is {:.2f} far".format(i, dist))
+        
         for i in range(0, blue_count):
             image = draw_crosshair(image, int(blue_centroids[i][1]), int(blue_centroids[i][0]), 0, 0, 255)
-            dist = pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))
-            image = cv2.putText(image, '{:.2f}'.format(dist), (int(blue_centroids[i][1]), int(blue_centroids[i][0])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
-            print("Blue centroid n {} is {:.2f} far".format(i, dist))
+            x, y, z, dist = pc_to_distance(pc, int(blue_centroids[i][1]), int(blue_centroids[i][0]))
+            image = cv2.putText(image, 'B{}:{:.2f}[{:.1f} {:.1f} {:.1f}]'.format(i+1, dist, x, y, z), (int(blue_centroids[i][0]), int(blue_centroids[i][1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+            #print("Blue centroid n {} is {:.2f} far".format(i, dist))
+        
 
         print("-------------------------------")
         print("Found\n{} red objects\n{} green objects\n{} blue objects".format(red_count, green_count, blue_count))
