@@ -30,13 +30,17 @@ def get_intersections(x0, y0, r0, x1, y1, r1):
         return (x3, y3, x4, y4)
 
 def get_directions(x1,y1,x2,y2,dist_from_gate):
-
-    B = [(x1+x2)/2,(y1+y2)/2]
-    V = [(y1-y2),-(x1-x2)] # NORMALIZE THIS SHIT
-    V[0] = (V[0]/(V[0]**2+V[1]**2)**(1/2))*dist_from_gate
+    # = np.sign(a1) * math.sin(math.radians(abs(a1))) * d1
+    #x2 = np.sign(a2) * math.sin(math.radians(abs(a2))) * d2
+    #y1 = np.sign(a1) * math.cos(math.radians(abs(a1))) * d1
+    #y2 = np.sign(a2) * math.cos(math.radians(abs(a2))) * d2
+    # print(x1,y1,x2,y2)
+    B = [(x1+x2)/2,(y1+y2)/2] # gate center
+    V = [(y1-y2),-(x1-x2)] # orthogonal vector to vector from one pillar to second pillar NORMALIZE THIS SHIT
+    V[0] = (V[0]/(V[0]**2+V[1]**2)**(1/2))*dist_from_gate #
     V[1] = (V[1] / (V[0] * 2 + V[1] * 2) ** (1 / 2))*dist_from_gate
-    c1 = [B[0]+V[0],B[1]+V[1]]
-    c2 = [B[0]-V[0],B[1]-V[1]]
+    c1 = [B[0]+V[0],B[1]+V[1]] #
+    c2 = [B[0]-V[0],B[1]-V[1]] #
     if c1[0]**2+c1[1]**2>c2[0]**2+c2[1]**2:
         C = c2
     else:
@@ -47,15 +51,15 @@ def get_directions(x1,y1,x2,y2,dist_from_gate):
     else:
         v = [c2[0]-c1[0],c2[1]-c1[1]]
 
-    angle1 = (math.atan2(C[1],C[0]))
-    vector_angle = (math.atan2(v[1],v[0]))
+    angle1 = math.degrees(math.atan2(C[1],C[0]))
+    vector_angle = math.degrees(math.atan2(v[1],v[0]))
 
     distance = math.sqrt(C[0] * 2 + C[1] * 2)
 
-    angle1 = (angle1 - math.radians(90))
-    vector_angle = vector_angle - math.radians(90)
+    angle1 = -(angle1 - 90)
+    vector_angle = vector_angle -90
 
-    final_angle = (vector_angle - angle1)
+    final_angle = -(vector_angle - angle1)
 
 
-    return angle1, distance, final_angle
+    return angle1, distance, vector_angle, final_angle
