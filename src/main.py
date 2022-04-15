@@ -46,7 +46,8 @@ def next_tick(previous_state, next_gate_color, timeout):
     MIDCOL = image.shape[1]/2
 
     image, filtered, count, centroids = get_objects_for_color(image, next_gate_color)
-
+    cv2.imshow("mask", filtered)
+    print(count)
     global end_angle
     global end_angle2
     global end_distance
@@ -102,7 +103,7 @@ def next_tick(previous_state, next_gate_color, timeout):
         if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
             print("=============================")
             print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
-            angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.5)
+            angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
             print("angle1:\t", math.degrees(angle1), " deg")
             print("dist:\t", dist, " m")
             print("angle2:\t", math.degrees(angle2), " deg")
@@ -135,7 +136,7 @@ def next_tick(previous_state, next_gate_color, timeout):
 
     if state == FACE_GATE:
         end_angle = end_angle2
-        end_distance = 0.7
+        end_distance = 0.25
         target = 2
         
         if end_angle < 0:
@@ -201,7 +202,6 @@ def main():
     state = LOOKING_FOR_GATE
     previous_state = LOOKING_FOR_GATE
     next_gate_color = GREEN
-
     timeout = 1000
 
     while not turtle.is_shutting_down() and isRunning and state != FINISH:

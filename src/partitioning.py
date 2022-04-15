@@ -10,13 +10,14 @@ def remove_small_components(color_mask):
     sizes = stats[1:, -1]
     n_comp = n_comp - 1
 
-    min_size = 1000
+    min_size = 6000
 
     new = np.zeros((output.shape))
     new_n_components = 0
     new_centroids = []
     for i in range(0, n_comp):
         if sizes[i] >= min_size:
+            print(sizes[i])
             new_centroids.append(centroids[i + 1])
             new[output == i + 1] = 255
             new_n_components += 1
