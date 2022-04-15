@@ -59,7 +59,7 @@ def get_directions(x1,y1,x2,y2,dist_from_gate):
     angle1 = -(angle1 - 90)
     vector_angle = vector_angle -90
 
-    final_angle = -(vector_angle - angle1)
+    final_angle = -(vector_angle + angle1)
 
 
     return math.radians(angle1), distance, math.radians(final_angle)
