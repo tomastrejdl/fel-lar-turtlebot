@@ -32,7 +32,7 @@ def bumper_callback(msg):
         quit()
 
 # Each tick an image is retrieved from robot, analyzed and state is updated accordingly
-def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
+def next_tick(previous_state, next_gate_color, timeout):
     state = previous_state
     image = turtle.get_rgb_image()
     pc = turtle.get_point_cloud()
@@ -40,15 +40,15 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
     # wait for image to be ready
     if image is None: return
 
-    MIDROW = image.shape[0]/2
-    MIDCOL = image.shape[1]/2
+    # MIDROW = image.shape[0]/2
+    # MIDCOL = image.shape[1]/2
 
     image, filtered, count, centroids = get_objects_for_color(image, next_gate_color)
 
     global end_angle
     global end_distance
 
-    center_row = center_col = 0
+    # center_row = center_col = 0
 
     if state == MOVE_TO_GATE:
         x, y, angle = turtle.get_odometry()
@@ -78,38 +78,40 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
             turtle.reset_odometry()
             turtle.wait_for_odometry()
 
-    if count == 2:
-        if state == LOOKING_FOR_GATE:
-            x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-            x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
+    if state == MEASURE_DISTANCE_TO_GATE:
+        x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+        x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
 
-            if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
-                print("=============================")
-                print("G1:[{}][{}] \nG2: [{}][{}]".format(x1, z1, x2, z2))
-                angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.5)
-                print("angle1:\t", angle1)
-                print("dist:\t", dist)
-                print("angle2:\t", angle2)
-                print("=============================")
+        if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
+            print("=============================")
+            print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
+            angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.5)
+            print("angle1:\t", angle1)
+            print("dist:\t", dist)
+            print("angle2:\t", angle2)
+            print("=============================")
 
-                if angle1 != math.nan and dist != math.nan:
-                    turtle.reset_odometry()
-                    turtle.wait_for_odometry()
-                    x, y, angle = turtle.get_odometry()
+            if angle1 != math.nan and dist != math.nan:
+                turtle.reset_odometry()
+                turtle.wait_for_odometry()
+                x, y, angle = turtle.get_odometry()
 
-                    
-                    end_angle = angle1
-                    end_distance = dist
+                
+                end_angle = angle1
+                end_distance = dist
 
-                    if end_angle < 0:
-                        state = ROTATE_LEFT_TOWARD_GATE
-                    else:
-                        state = ROTATE_RIGHT_TOWARD_GATE
-                    
-                    cv2.imshow(WINDOW, image)
-                    cv2.waitKey(0)
+                if end_angle < 0:
+                    state = ROTATE_LEFT_TOWARD_GATE
+                else:
+                    state = ROTATE_RIGHT_TOWARD_GATE
+                
+                cv2.imshow(WINDOW, image)
+                cv2.waitKey(0)
             
         
+    if count == 2 and previous_state == LOOKING_FOR_GATE:
+        print("Waiting to finish motion...")
+        state = MEASURE_DISTANCE_TO_GATE
 
 
 
@@ -136,9 +138,9 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
     #         state = LOOKING_FOR_GATE
     
     # if state == GO_THROUGH_GATE and previous_state == GO_THROUGH_GATE:
-    #     go_through_gate_timeout -= 1
+    #     timeout -= 1
 
-    # if state == GO_THROUGH_GATE and go_through_gate_timeout <= 0:
+    # if state == GO_THROUGH_GATE and timeout <= 0:
     #     if next_gate_color == RED:
     #         next_gate_color = BLUE
     #     elif next_gate_color == BLUE:
@@ -159,7 +161,7 @@ def next_tick(previous_state, next_gate_color,go_through_gate_timeout):
     cv2.imshow(WINDOW, image)
     cv2.waitKey(1)
 
-    return state, next_gate_color, go_through_gate_timeout
+    return state, next_gate_color, timeout
 
 
 def main():
@@ -175,19 +177,22 @@ def main():
     previous_state = LOOKING_FOR_GATE
     next_gate_color = GREEN
 
-    go_through_gate_timeout = 1000
+    timeout = 1000
 
     while not turtle.is_shutting_down() and isRunning and state != FINISH:
         # Look for any gate and update state
         #print("{}, {} = next_tick({}, {})".format(state, next_gate_color, state, next_gate_color))
         
         previous_state = state
-        state, next_gate_color, go_through_gate_timeout = next_tick(previous_state, next_gate_color, go_through_gate_timeout)
+        state, next_gate_color, timeout = next_tick(previous_state, next_gate_color, timeout)
 
         # Update velocity based on current state
         if motors_enabled:
             if state == LOOKING_FOR_GATE:
-                turtle.cmd_velocity(angular = 0.5)
+                turtle.cmd_velocity(angular = 0.3)
+            if state == MEASURE_DISTANCE_TO_GATE:
+                turtle.cmd_velocity(angular = 0)
+                cv2.waitKey(2000)
             # if state == ROTATE_LEFT:
             #     turtle.cmd_velocity(angular = 0.4)
             # if state == ROTATE_RIGHT:
