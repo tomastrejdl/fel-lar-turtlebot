@@ -14,6 +14,8 @@ end_angle = 0
 end_angle2 = 0
 end_distance = 0
 target = 1
+distance_and_angle = []
+
 
 isRunning = True
 turtle = Turtlebot(rgb=True, pc=True)
@@ -52,8 +54,52 @@ def next_tick(previous_state, next_gate_color, timeout):
     global end_angle2
     global end_distance
     global target
+    global distance_and_angle
 
     center_row = center_col = 0
+
+    angle_range = 30
+    
+
+    if state == LOSE_CENTER:
+        while filtered[MIDCOL][MIDROW] != 0:
+            state = ROTATE_RIGHT
+        rotate_by_angle(turtle, "RIGHT", math.radians(5) - 0.01)
+        state = ROTATE_AND_MEASURE
+
+    if state == ROTATE_AND_MEASURE:
+        '''
+        rotate_by_angle(turtle, "LEFT", math.radians(angle_range) - 0.01)
+        x, y, current_angle = turtle.get_odometry()
+        if len(centroids) > 0:
+
+            # get the centroid that is furthest left
+            most_left_centroid = sorted(centroids, key=lambda x: x[0])[0]
+            print(centroids)
+            print(most_left_centroid)
+            
+
+            # measure the distance to the pipe from point cloud
+            x1, y1, z1, dist1 = pc_to_distance(pc, int(most_left_centroid[1]), int(most_left_centroid[0]))
+            x, y, current_angle = turtle.get_odometry()
+        '''
+        turtle.reset_odometry()
+        turtle.wait_for_odometry()
+        rotate_by_angle(turtle, "LEFT", math.radians(angle_range) - 0.01)
+
+        #print(filtered.shape)
+        print(filtered[int(MIDCOL)][int(MIDROW)])
+        if filtered[int(MIDCOL)][int(MIDROW)] == 0.0:
+            turtle.cmd_velocity(angular = -0.2)
+            return
+        
+        x1, y1, z1, dist1 = pc_to_distance(pc, MIDROW, MIDCOL)
+        x, y, current_angle = turtle.get_odometry()
+        distance_and_angle.append([dist1*math.cos(current_angle), dist1*math.sin(current_angle)])
+        state = LOSE_CENTER
+        if current_angle > angle_range:
+            state = CALCULATE
+        
 
     if state == MOVE_TO_GATE:
         x, y, angle = turtle.get_odometry()
@@ -95,12 +141,15 @@ def next_tick(previous_state, next_gate_color, timeout):
             turtle.wait_for_odometry()
 
 
-    if state == MEASURE_DISTANCE_TO_GATE:
-        print("len(centroids): ", len(centroids))
-        x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-        x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
-
-        if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
+    if state == CALCULATE:
+        #print("len(centroids): ", len(centroids))
+        #x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+        #x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
+        print("state is CALCULATE. distance_and_angle: {}".format(distance_and_angle))
+        state = FINISH
+        #if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
+        '''
+        if len(distance_and_angle) > 0:
             print("=============================")
             print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
             angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
@@ -128,10 +177,11 @@ def next_tick(previous_state, next_gate_color, timeout):
                 
                 cv2.imshow(WINDOW, image)
                 cv2.waitKey(0)
-            
+        '''
     if count == 2 and previous_state == LOOKING_FOR_GATE:
         print("Waiting to finish motion...")
-        state = MEASURE_DISTANCE_TO_GATE
+        # state = MEASURE_DISTANCE_TO_GATE
+        state = ROTATE_AND_MEASURE
 
 
     if state == FACE_GATE:
@@ -201,7 +251,7 @@ def main():
     # Default robot state is LOOKING_FOR_GATE
     state = LOOKING_FOR_GATE
     previous_state = LOOKING_FOR_GATE
-    next_gate_color = GREEN
+    next_gate_color = RED
     timeout = 1000
 
     while not turtle.is_shutting_down() and isRunning and state != FINISH:
