@@ -9,6 +9,7 @@ from constants import *
 from partitioning import *
 from rotate_translate import *
 from angle_dist_angle import *
+from show_depth import *
 
 end_angle = 0
 end_angle2 = 0
@@ -40,14 +41,18 @@ def next_tick(previous_state, next_gate_color, timeout):
     state = previous_state
     image = turtle.get_rgb_image()
     pc = turtle.get_point_cloud()
+    if pc is None:
+      return
 
+    
     # wait for image to be ready
     if image is None: return
 
     MIDROW = image.shape[0]/2
     MIDCOL = image.shape[1]/2
-
+    pc_image = return_mask(pc)
     image, filtered, count, centroids = get_objects_for_color(image, next_gate_color)
+    pc_image = draw_crosshairs_for_color(pc_image, count, centroids, "hh")
     cv2.imshow("mask", filtered)
     print(count)
     global end_angle
@@ -60,12 +65,19 @@ def next_tick(previous_state, next_gate_color, timeout):
     center_row = center_col = 0
     
     if state == LOOK_FOR_SECOND_GATE:
-      if count == 2:
+      lookout_angle = 25
+      if count > 0:
+        x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+        pillars.append([x1,z1])
+        print(pillars)
+      if count == 8:
+        print("Was I supposed to find this?")
         state = MEASURE_DISTANCE_TO_GATE
       else:
-        end_angle = math.radians(30)
-        end_angle2 = math.radians(-60)
+        end_angle = math.radians(lookout_angle)
+        end_angle2 = math.radians(-2*lookout_angle)
         if SECOND_GATE_STATE == 0: # ROTATE LEFT
+
           print("ROTATE LEFT")
           x, y, angle = turtle.get_odometry()
           if angle > end_angle:
@@ -122,7 +134,7 @@ def next_tick(previous_state, next_gate_color, timeout):
             pillars = []
             if x1 != math.nan and z1 != math.nan and x2 != math.nan and z2 != math.nan:
               print("=============================")
-              print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
+              print("G1: [{}][{}] \nG2: [{}][{}]".format(x1, z1, x2, z2))
               angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
               print("angle1:\t", math.degrees(angle1), " deg")
               print("dist:\t", dist, " m")
@@ -148,17 +160,7 @@ def next_tick(previous_state, next_gate_color, timeout):
                 
                 cv2.imshow(WINDOW, image)
                 cv2.waitKey(0)
-            
-            
-            
-            
-        
-        
-        
-        
-          
-      
-      
+
 
     if state == MOVE_TO_GATE:
         x, y, angle = turtle.get_odometry()
@@ -202,46 +204,47 @@ def next_tick(previous_state, next_gate_color, timeout):
 
     if state == MEASURE_DISTANCE_TO_GATE:
         print("len(centroids): ", len(centroids))
-        x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-        x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
+        if len(centroids) == 2:
+          x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+          x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
+          print(x1, z1, x2, z2)
+          if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
+              print("=============================")
+              print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
+              angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
+              print("angle1:\t", math.degrees(angle1), " deg")
+              print("dist:\t", dist, " m")
+              print("angle2:\t", math.degrees(angle2), " deg")
+              print("=============================")
 
-        if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
-            print("=============================")
-            print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
-            angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
-            print("angle1:\t", math.degrees(angle1), " deg")
-            print("dist:\t", dist, " m")
-            print("angle2:\t", math.degrees(angle2), " deg")
-            print("=============================")
+              if angle1 != math.nan and dist != math.nan:
+                  turtle.reset_odometry()
+                  turtle.wait_for_odometry()
+                  x, y, angle = turtle.get_odometry()
 
-            if angle1 != math.nan and dist != math.nan:
-                turtle.reset_odometry()
-                turtle.wait_for_odometry()
-                x, y, angle = turtle.get_odometry()
+                  end_angle = angle1
+                  end_angle2 = angle2
+                  end_distance = dist
 
-                end_angle = angle1
-                end_angle2 = angle2
-                end_distance = dist
-
-                target = 1
+                  target = 1
 
 
-                if end_angle < 0:
-                    state = ROTATE_LEFT_TOWARD_GATE
-                else:
-                    state = ROTATE_RIGHT_TOWARD_GATE
-                
-                cv2.imshow(WINDOW, image)
-                cv2.waitKey(0)
-            
-    if count == 2 and previous_state == LOOKING_FOR_GATE:
+                  if end_angle < 0:
+                      state = ROTATE_LEFT_TOWARD_GATE
+                  else:
+                      state = ROTATE_RIGHT_TOWARD_GATE
+                  
+                  cv2.imshow(WINDOW, image)
+                  cv2.waitKey(0)
+
+    if count == 2 and (previous_state == LOOKING_FOR_GATE):
         print("Waiting to finish motion...")
         state = MEASURE_DISTANCE_TO_GATE
 
 
     if state == FACE_GATE:
         end_angle = end_angle2
-        end_distance = 0.25
+        end_distance = 0.35
         target = 2
         
         if end_angle < 0:
@@ -290,6 +293,7 @@ def next_tick(previous_state, next_gate_color, timeout):
 
     # show image
     cv2.imshow(WINDOW, image)
+    cv2.imshow("PC", pc_image)
     cv2.waitKey(1)
 
     return state, next_gate_color, timeout
@@ -302,6 +306,7 @@ def main():
     turtle.reset_odometry()
 
     cv2.namedWindow(WINDOW)
+    cv2.namedWindow("PC")
 
     # Default robot state is LOOKING_FOR_GATE
     state = LOOKING_FOR_GATE
