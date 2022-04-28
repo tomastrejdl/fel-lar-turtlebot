@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 
-from robolab_turtlebot import Turtlebot
 import numpy as np
-import cv2
+import math
 
 from constants import *
 from partitioning import *
@@ -60,25 +59,20 @@ def get_intersections(x0, y0, r0, x1, y1, r1):
         
         return (x3, y3, x4, y4)
 
-def get_distance_to_closest_object_of_color(image, color):
-    image, filtered, count, centroids = get_objects_for_color(image, color)
+def get_distance_to_closest_object_of_color(image, pc, color):
+    _, _, _, centroids = get_objects_for_color(image, color)
+    # print(f'{color} centroids: {centroids}')
 
-    print(centroids)
+    min_distance = math.inf
+    for c in centroids:
+        _, _, _, distance = pc_to_distance(pc, int(c[1]), int(c[0]))
+        min_distance = distance if distance < min_distance else min_distance
+    # print(f'Closest {color} object distance: {min_distance}')
 
-    return 0
+    return min_distance
     
-def find_closest_gate_color(image):
-    red_distance = get_distance_to_closest_object_of_color(image, RED)
-    blue_distance = get_distance_to_closest_object_of_color(image, BLUE)
+def find_closest_gate_color(image, pc):
+    red_distance = get_distance_to_closest_object_of_color(image, pc, RED)
+    blue_distance = get_distance_to_closest_object_of_color(image, pc, BLUE)
 
-    if red_distance < blue_distance:
-        return RED
-    else:
-        return BLUE
-
-# def camera_to_world(x, y, z):
-#     # x_c ... vector of camera coordinates
-#     x_c = np.array(x, y, z)
-
-#     # x_w ... vector of world coordinates
-#     x_w = np.matmul(t_o, t_c, x_c)
+    return RED if red_distance < blue_distance else BLUE
