@@ -12,9 +12,18 @@ def euclid_norm(x, y, z):
     return np.sqrt(x*x + y*y + z*z)
 
 def pc_to_distance(pc, row, column):
-    x = pc[row][column][0]
-    y = pc[row][column][1]
-    z = pc[row][column][2]
+    x_square = np.array([])
+    y_square = np.array([])
+    z_square = np.array([])
+
+    for i in range(-1, 2):
+        for j in range(-1, 2):
+            x_square = np.append(x_square, pc[row-i][column-j][0])
+            y_square = np.append(y_square, pc[row-i][column-j][1])
+            z_square = np.append(z_square, pc[row-i][column-j][2])
+    x = np.mean(x_square[np.isfinite(x_square)])
+    y = np.mean(y_square[np.isfinite(y_square)])
+    z = np.mean(z_square[np.isfinite(z_square)])
     return x, y, z, euclid_norm(x, y, z)
 
 def get_coords(pc, row, column):
