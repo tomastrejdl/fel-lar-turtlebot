@@ -8,11 +8,10 @@ from constants import *
 from partitioning import *
 from angle_dist_angle import *
 from show_depth import *
+from transform_coords import *
 
 isRunning = True
 turtle = Turtlebot(rgb=True, pc=True)
-
-motors_enabled = True
 
 
 def bumper_callback(msg):
@@ -68,13 +67,23 @@ def update_image(next_gate_color):
     
     return image , filtered, count, centroids, pc, pc_image
 
-def detect_pipes_in_image(next_gate_color, next_state, count, pc, centroids):
-    new_pillars = []
-    if count > 0:
-        x, _, z, dist = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-        new_pillars.append([x, z, dist])
+def is_pipe_unique(pillars, xt, yt):
+    EPSILON = 0.1
+    for i in range(0, len(pillars)):
+        if abs(xt - pillars[i][0]) < EPSILON and abs(yt - pillars[i][1]) < EPSILON:
+            return False
+        
+    return True
 
-    return next_state, new_pillars
+def detect_pipes_in_image(next_gate_color, next_state, count, pc, centroids, pillars, lookout_angle):
+    for i in range(0, count):
+        x, _, z, dist = pc_to_distance(pc, int(centroids[i][1]), int(centroids[i][0]))
+        xt, zt = transform_coords(x, z, lookout_angle)
+        print(f'>>>>> Found new pipe: xt: {xt}, zt: {zt}')
+        if is_pipe_unique(pillars, xt, zt):
+            pillars.append([xt, zt, dist])
+
+    return next_state, pillars
     
 
 def rotate_by_angle(target_angle, current_state, next_state):
@@ -95,12 +104,17 @@ def rotate_by_angle(target_angle, current_state, next_state):
     
 
 def measure_distance_to_gate(pillars):
+    print(f'--------------------------------------')
+    print(f'MEASURE DISTANCE TO GATE')
+
     if len(pillars) < 2:
         print("Unable to find gate")
         return DRIVE_BACK, None, None, None
     else:
         print("Ha! Found a gate")
-        print(f'Pillars: {pillars}')
+
+        pillars = sorted(pillars, key=lambda x: x[2])
+
         x1 = pillars[0][0]
         z1 = pillars[0][1]
         x2 = pillars[1][0]
@@ -123,11 +137,14 @@ def measure_distance_to_gate(pillars):
                 print(f'angle2:\t{math.degrees(angle2)} deg')
                 print("=============================")
 
+
+                # cv2.waitKey(0)
+
                 if angle1 != math.nan and dist != math.nan:
                     turtle.reset_odometry()
                     turtle.wait_for_odometry()
                     return ROTATE_TOWARD_GATE, angle1, dist, angle2
-
+    
     return MEASURE_DISTANCE_TO_GATE, None, None, None
 
 
@@ -136,6 +153,8 @@ def drive(dist, current_state, next_state):
     turtle.cmd_velocity(linear = direction * 0.1)
 
     x, _, _ = turtle.get_odometry()
+    print(f'dRIVE: current:{x} --> target: {dist}')
+
     if abs(x) > abs(dist):
         print(f'Finished drive!')
         turtle.cmd_velocity(linear = 0)
@@ -168,48 +187,49 @@ def main():
     pillars = []
     while not turtle.is_shutting_down() and isRunning and state != FINISH:
         previous_state = state
-        LOOKOUT_ANGLE = 25
+        LOOKOUT_ANGLE = 35
 
+        if state == DETECT_PIPES_IN_IMAGE or state == DETECT_PIPES_IN_IMAGE_LEFT or state == DETECT_PIPES_IN_IMAGE_RIGHT:
+            cv2.waitKey(1000)
         image , filtered, count, centroids, pc, pc_image = update_image(next_gate_color)
 
         if state == DETECT_PIPES_IN_IMAGE:
-            state, new_pillars = detect_pipes_in_image(next_gate_color, LOOK_LEFT, count, pc, centroids)
+            state, pillars = detect_pipes_in_image(next_gate_color, LOOK_LEFT, count, pc, centroids, pillars, 0)
         elif state == LOOK_LEFT:
             state = rotate_by_angle(math.radians(LOOKOUT_ANGLE), LOOK_LEFT, DETECT_PIPES_IN_IMAGE_LEFT)
         elif state == DETECT_PIPES_IN_IMAGE_LEFT:     
-            state,new_pillars = detect_pipes_in_image(next_gate_color, LOOK_RIGHT, count, pc, centroids)
+            state,pillars = detect_pipes_in_image(next_gate_color, LOOK_RIGHT, count, pc, centroids, pillars, LOOKOUT_ANGLE)
         elif state == LOOK_RIGHT:                     
             state = rotate_by_angle(math.radians(-2 * LOOKOUT_ANGLE), LOOK_RIGHT, LOOK_BACK_TO_CENTER)
         elif state == DETECT_PIPES_IN_IMAGE_RIGHT:    
-            state, new_pillars = detect_pipes_in_image(next_gate_color, LOOK_BACK_TO_CENTER, count, pc, centroids)
+            state, pillars = detect_pipes_in_image(next_gate_color, LOOK_BACK_TO_CENTER, count, pc, centroids, pillars, -LOOKOUT_ANGLE)
         elif state == LOOK_BACK_TO_CENTER:            
-            state =rotate_by_angle(math.radians(LOOKOUT_ANGLE), LOOK_BACK_TO_CENTER, MEASURE_DISTANCE_TO_GATE)
+            state = rotate_by_angle(math.radians(LOOKOUT_ANGLE), LOOK_BACK_TO_CENTER, MEASURE_DISTANCE_TO_GATE)
 
 
         elif state == MEASURE_DISTANCE_TO_GATE:       
             state, angle1, dist, angle2 = measure_distance_to_gate(pillars)
         elif state == DRIVE_BACK:                     
-            state = drive(-0.5, DRIVE_BACK, DETECT_PIPES_IN_IMAGE)
+            # state = drive(-0.1, DRIVE_BACK, DETECT_PIPES_IN_IMAGE)
+            LOOKOUT_ANGLE = 45
+            state = DETECT_PIPES_IN_IMAGE
+            pillars = []
 
 
         elif state == ROTATE_TOWARD_GATE:             
-            state = rotate_by_angle(angle1, ROTATE_TOWARD_GATE, DRIVE_TOWARDS_GATE)
+            state = rotate_by_angle(-angle1, ROTATE_TOWARD_GATE, DRIVE_TOWARDS_GATE)
         elif state == DRIVE_TOWARDS_GATE:             
             state = drive(dist, DRIVE_TOWARDS_GATE, ROTATE_TO_FACE_GATE)
         elif state == ROTATE_TO_FACE_GATE:            
-            state = rotate_by_angle(angle2, ROTATE_TO_FACE_GATE, DRIVE_THROUGH_GATE)
+            state = rotate_by_angle(-angle2, ROTATE_TO_FACE_GATE, DRIVE_THROUGH_GATE)
         elif state == DRIVE_THROUGH_GATE:             
-            state = drive(dist, DRIVE_THROUGH_GATE, DETECT_NEXT_GATE_COLOR)
+            state = drive(0.2, DRIVE_THROUGH_GATE, DETECT_NEXT_GATE_COLOR)
         elif state == DETECT_NEXT_GATE_COLOR:         
             state, next_gate_color = detect_next_gate_color(next_gate_color, image, pc)
-    
-        # Add newly found pillars
-        for pillar in new_pillars:
-            pillars.append(pillar)
+            pillars = []
+            LOOKOUT_ANGLE = 35
 
-        if len(pillars) == 2:
-            print(f'Found two pillars. Measuring distence to gate')
-            state = MEASURE_DISTANCE_TO_GATE
+        print(f'Pillars: {pillars}')
 
         print(f'\nFound {count} {next_gate_color} objects')
         print(f'Setting state from {previous_state} to {state}')
