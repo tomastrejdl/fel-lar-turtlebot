@@ -185,12 +185,12 @@ def main():
         if state == DRIVE_THROUGH_GATE: state = drive(dist, DRIVE_THROUGH_GATE, DETECT_NEXT_GATE_COLOR)
         if state == DETECT_NEXT_GATE_COLOR: state, next_gate_color = detect_next_gate_color(next_gate_color, image)
 
-    # Add newly found pillars
-    pillars.append(new_pillars)
+        # Add newly found pillars
+        pillars.append(new_pillars)
 
-    print(f'\nFound {count} {next_gate_color} objects')
-    print(f'Setting state from {previous_state} to {state}')
-    print("-------------------------------")
+        print(f'\nFound {count} {next_gate_color} objects')
+        print(f'Setting state from {previous_state} to {state}')
+        print("-------------------------------")
 
     # Play finish sound
     turtle.play_sound(1)
