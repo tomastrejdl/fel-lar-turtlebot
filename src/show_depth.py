@@ -4,7 +4,7 @@ import cv2
 x_range = (-0.3, 0.3)
 z_range = (0.3, 3.0)
 
-def return_mask(pc):
+def get_pc_mask(pc):
     mask = pc[:, :, 1] > x_range[0]
 
     # mask point too far and close

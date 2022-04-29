@@ -6,7 +6,6 @@ import cv2
 from distance import *
 from constants import *
 from partitioning import *
-from rotate_translate import *
 from angle_dist_angle import *
 from show_depth import *
 
@@ -35,72 +34,70 @@ def bumper_callback(msg):
 
 
 def get_objects_from_rgb_image(next_gate_color):
-    image = turtle.get_rgb_image()
-    if image is None:
-        raise Exception("No RGB Image received")
+    while True:
+        image = turtle.get_rgb_image()
+        if not image is None:
+            break
 
     image, filtered, count, centroids = get_objects_for_color(image, next_gate_color)
-    cv2.imshow(WINDOW, image)
-    cv2.imshow("mask", filtered)
-
+    
     return image, filtered, count, centroids
 
 
 def get_pc_image(count, centroids):
-    pc = turtle.get_point_cloud()
-    if pc is None:
-        raise Exception("No PointCloud received")
+    while True:
+        pc = turtle.get_point_cloud()
+        if pc is None:
+            continue
 
-    pc_image = return_mask(pc)
-    pc_image = draw_crosshairs_for_color(pc_image, count, centroids, "hh")
-    cv2.imshow("PC", pc_image)
+        pc_image = get_pc_mask(pc)
+        if not pc_image is None:
+            break
 
+    pc_image = draw_crosshairs_for_color(pc_image, count, centroids, "black")
+   
     return pc, pc_image
 
 
 # ////////////////////////////////////////////////////////////////////////////////////////
 # ////////////////////////////////////////////////////////////////////////////////////////
 
-def detect_pipes_in_image(next_gate_color, next_state):
+def update_image(next_gate_color):
     image, filtered, count, centroids = get_objects_from_rgb_image(next_gate_color)
     pc, pc_image = get_pc_image(count, centroids)
+    
+    return image , filtered, count, centroids, pc, pc_image
 
+def detect_pipes_in_image(next_gate_color, next_state, count, pc, centroids):
     new_pillars = []
     if count > 0:
-        x1, _, z1, _ = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-        new_pillars.append([x1, z1])
+        x, _, z, dist = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+        new_pillars.append([x, z, dist])
 
-    return next_state, image , filtered, count, centroids, pc, pc_image, new_pillars
-
+    return next_state, new_pillars
+    
 
 def rotate_by_angle(target_angle, current_state, next_state):
+    speed = 0.4 if target_angle > 0 else -0.4
+    turtle.cmd_velocity(angular = speed)
+
     _, _, angle = turtle.get_odometry()
-    direction = 1 if target_angle > 0 else -1
+    print(f'Rotate by angle: current:{angle} --> target: {target_angle}')
 
     if abs(angle) > abs(target_angle):
-        turtle.cmd_velocity(angular = direction * 0.2)
+        print(f'Finished rotation! Reseting odometry')
+        turtle.cmd_velocity(angular = 0)
         turtle.reset_odometry()
         turtle.wait_for_odometry()
         return next_state
 
     return current_state
-
-
-def look_back_to_center():
-    turtle.cmd_velocity(angular = 0.2)
-    _, _, angle = turtle.get_odometry()
-    if angle > 0:
-        turtle.reset_odometry()
-        turtle.wait_for_odometry()
-        return MEASURE_DISTANCE_TO_GATE
-
-    return LOOK_BACK_TO_CENTER
     
 
 def measure_distance_to_gate(pillars):
     if len(pillars) < 2:
         print("Unable to find gate")
-        return DRIVE_BACK
+        return DRIVE_BACK, None, None, None
     else:
         print("Ha! Found a gate")
         print(f'Pillars: {pillars}')
@@ -117,19 +114,21 @@ def measure_distance_to_gate(pillars):
             # GET DIRECTIONS
             angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
 
-            print("=============================")
-            print(f'G1: {dist1} [{x1}][{z1}] \nG2: {dist2} [{x2}][{z2}]')
-            print(f'angle1:\t{math.degrees(angle1)} deg')
-            print(f'dist:\t {dist} m')
-            print(f'angle2:\t{math.degrees(angle2)} deg')
-            print("=============================")
+            if angle1 != math.nan and dist != math.nan and angle2 != math.nan:
 
-            if angle1 != math.nan and dist != math.nan:
-                turtle.reset_odometry()
-                turtle.wait_for_odometry()
-                return ROTATE_TOWARD_GATE, angle1, dist, angle2
+                print("=============================")
+                print(f'G1: {dist1} [{x1}][{z1}] \nG2: {dist2} [{x2}][{z2}]')
+                print(f'angle1:\t{math.degrees(angle1)} deg')
+                print(f'dist:\t {dist} m')
+                print(f'angle2:\t{math.degrees(angle2)} deg')
+                print("=============================")
 
-    return MEASURE_DISTANCE_TO_GATE
+                if angle1 != math.nan and dist != math.nan:
+                    turtle.reset_odometry()
+                    turtle.wait_for_odometry()
+                    return ROTATE_TOWARD_GATE, angle1, dist, angle2
+
+    return MEASURE_DISTANCE_TO_GATE, None, None, None
 
 
 def drive(dist, current_state, next_state):
@@ -138,18 +137,20 @@ def drive(dist, current_state, next_state):
 
     x, _, _ = turtle.get_odometry()
     if abs(x) > abs(dist):
+        print(f'Finished drive!')
+        turtle.cmd_velocity(linear = 0)
         return next_state
 
     return current_state
 
 
-def detect_next_gate_color(current_gate_color, image):
+def detect_next_gate_color(current_gate_color, image, pc):
     if current_gate_color == RED:
         return DETECT_PIPES_IN_IMAGE, BLUE
     elif current_gate_color == BLUE:
         return DETECT_PIPES_IN_IMAGE, RED
     else:
-        return DETECT_PIPES_IN_IMAGE, find_closest_gate_color(image)
+        return DETECT_PIPES_IN_IMAGE, find_closest_gate_color(image, pc)
 
 
 def main():
@@ -169,28 +170,56 @@ def main():
         previous_state = state
         LOOKOUT_ANGLE = 25
 
-        if state == DETECT_PIPES_IN_IMAGE: state, image , filtered, count, centroids, pc, pc_image, new_pillars = detect_pipes_in_image(next_gate_color, LOOK_LEFT)
-        if state == LOOK_LEFT: state = rotate_by_angle(math.radians(LOOKOUT_ANGLE), LOOK_LEFT, DETECT_PIPES_IN_IMAGE_LEFT)
-        if state == DETECT_PIPES_IN_IMAGE_LEFT: state = detect_pipes_in_image(next_gate_color, LOOK_RIGHT)
-        if state == LOOK_RIGHT: state = rotate_by_angle(math.radians(-2 * LOOKOUT_ANGLE), LOOK_RIGHT, LOOK_BACK_TO_CENTER)
-        if state == DETECT_PIPES_IN_IMAGE_RIGHT: state = detect_pipes_in_image(next_gate_color, LOOK_BACK_TO_CENTER)
-        if state == LOOK_BACK_TO_CENTER: state = look_back_to_center()
+        image , filtered, count, centroids, pc, pc_image = update_image(next_gate_color)
 
-        if state == MEASURE_DISTANCE_TO_GATE: state, angle1, dist, angle2 = measure_distance_to_gate(pillars)
-        if state == DRIVE_BACK: state = drive(-0.5, DRIVE_BACK, DETECT_PIPES_IN_IMAGE)
+        if state == DETECT_PIPES_IN_IMAGE:
+            state, new_pillars = detect_pipes_in_image(next_gate_color, LOOK_LEFT, count, pc, centroids)
+        elif state == LOOK_LEFT:
+            state = rotate_by_angle(math.radians(LOOKOUT_ANGLE), LOOK_LEFT, DETECT_PIPES_IN_IMAGE_LEFT)
+        elif state == DETECT_PIPES_IN_IMAGE_LEFT:     
+            state,new_pillars = detect_pipes_in_image(next_gate_color, LOOK_RIGHT, count, pc, centroids)
+        elif state == LOOK_RIGHT:                     
+            state = rotate_by_angle(math.radians(-2 * LOOKOUT_ANGLE), LOOK_RIGHT, LOOK_BACK_TO_CENTER)
+        elif state == DETECT_PIPES_IN_IMAGE_RIGHT:    
+            state, new_pillars = detect_pipes_in_image(next_gate_color, LOOK_BACK_TO_CENTER, count, pc, centroids)
+        elif state == LOOK_BACK_TO_CENTER:            
+            state =rotate_by_angle(math.radians(LOOKOUT_ANGLE), LOOK_BACK_TO_CENTER, MEASURE_DISTANCE_TO_GATE)
 
-        if state == ROTATE_TOWARD_GATE: state = rotate_by_angle(angle1, ROTATE_TOWARD_GATE, DRIVE_TOWARDS_GATE)
-        if state == DRIVE_TOWARDS_GATE: state = drive(dist, DRIVE_TOWARDS_GATE, ROTATE_TO_FACE_GATE)
-        if state == ROTATE_TO_FACE_GATE: state = rotate_by_angle(angle2, ROTATE_TO_FACE_GATE, DRIVE_THROUGH_GATE)
-        if state == DRIVE_THROUGH_GATE: state = drive(dist, DRIVE_THROUGH_GATE, DETECT_NEXT_GATE_COLOR)
-        if state == DETECT_NEXT_GATE_COLOR: state, next_gate_color = detect_next_gate_color(next_gate_color, image)
 
+        elif state == MEASURE_DISTANCE_TO_GATE:       
+            state, angle1, dist, angle2 = measure_distance_to_gate(pillars)
+        elif state == DRIVE_BACK:                     
+            state = drive(-0.5, DRIVE_BACK, DETECT_PIPES_IN_IMAGE)
+
+
+        elif state == ROTATE_TOWARD_GATE:             
+            state = rotate_by_angle(angle1, ROTATE_TOWARD_GATE, DRIVE_TOWARDS_GATE)
+        elif state == DRIVE_TOWARDS_GATE:             
+            state = drive(dist, DRIVE_TOWARDS_GATE, ROTATE_TO_FACE_GATE)
+        elif state == ROTATE_TO_FACE_GATE:            
+            state = rotate_by_angle(angle2, ROTATE_TO_FACE_GATE, DRIVE_THROUGH_GATE)
+        elif state == DRIVE_THROUGH_GATE:             
+            state = drive(dist, DRIVE_THROUGH_GATE, DETECT_NEXT_GATE_COLOR)
+        elif state == DETECT_NEXT_GATE_COLOR:         
+            state, next_gate_color = detect_next_gate_color(next_gate_color, image, pc)
+    
         # Add newly found pillars
-        pillars.append(new_pillars)
+        for pillar in new_pillars:
+            pillars.append(pillar)
+
+        if len(pillars) == 2:
+            print(f'Found two pillars. Measuring distence to gate')
+            state = MEASURE_DISTANCE_TO_GATE
 
         print(f'\nFound {count} {next_gate_color} objects')
         print(f'Setting state from {previous_state} to {state}')
         print("-------------------------------")
+
+        cv2.imshow("PC", pc_image)
+        cv2.imshow(WINDOW, image)
+        cv2.imshow("mask", filtered)
+
+        cv2.waitKey(10)
 
     # Play finish sound
     turtle.play_sound(1)

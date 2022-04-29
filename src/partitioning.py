@@ -17,7 +17,7 @@ def remove_small_components(color_mask):
     new_centroids = []
     for i in range(0, n_comp):
         if sizes[i] >= min_size:
-            print(sizes[i])
+            # print(sizes[i])
             new_centroids.append(centroids[i + 1])
             new[output == i + 1] = 255
             new_n_components += 1
