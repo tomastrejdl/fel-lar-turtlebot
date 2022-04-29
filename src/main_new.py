@@ -10,6 +10,7 @@ from partitioning import *
 from rotate_translate import *
 from angle_dist_angle import *
 from show_depth import *
+from transform_coords import *
 
 end_angle = 0
 end_angle2 = 0
@@ -17,11 +18,20 @@ end_distance = 0
 target = 1
 SECOND_GATE_STATE = 0
 pillars = []
+pillars2 = []
 
 isRunning = True
 turtle = Turtlebot(rgb=True, pc=True)
 
 motors_enabled = True
+
+def is_pipe_unique(xt, yt, epsilon):
+
+  for i in range(0, len(pillars)):
+    if abs(xt - pillars[i][0]) < epsilon and abs(yt - pillars[i][1]) < epsilon:
+      return False
+    
+  return True
 
 def bumper_callback(msg):
     bumper_name = BUMPER_NAMES[msg.bumper] # msg.bumper stores the id of bumper 0:LEFT, 1:CENTER, 2:RIGHT
@@ -65,11 +75,11 @@ def next_tick(previous_state, next_gate_color, timeout):
     center_row = center_col = 0
     
     if state == LOOK_FOR_SECOND_GATE:
-      lookout_angle = 25
-      if count > 0:
-        x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-        pillars.append([x1,z1])
-        print(pillars)
+      lookout_angle = 35
+      #if count > 0:
+        #x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
+        #pillars.append([x1,z1])
+      print(pillars)
       if count == 8:
         print("Was I supposed to find this?")
         state = MEASURE_DISTANCE_TO_GATE
@@ -87,10 +97,13 @@ def next_tick(previous_state, next_gate_color, timeout):
             
         if SECOND_GATE_STATE == 1: # TAKE A PICTURE
           print("TAKE A PICTURE")
-          if count > 0:
-            x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-            pillars.append([x1,z1])
-            print(pillars)
+          for i in range(0, count):
+            x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[i][1]), int(centroids[i][0]))
+            xt, yt = transform_coords(x1, z1, lookout_angle)
+            if is_pipe_unique(xt, yt, EPSILON):
+              pillars.append([xt,yt, dist1])
+            pillars2.append([x1,z1])
+          print(pillars)
           SECOND_GATE_STATE = 2
           
         if SECOND_GATE_STATE == 2: # ROTATE RIGHT
@@ -103,10 +116,13 @@ def next_tick(previous_state, next_gate_color, timeout):
             
         if SECOND_GATE_STATE == 3: # TAKE A SECOND PICTURE
           print("TAKE A SECOND PICTURE")
-          if count > 0:
-            x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
-            pillars.append([x1,z1])
-            print(pillars)
+          for i in range(0, count):
+            x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[i][1]), int(centroids[i][0]))
+            xt, yt = transform_coords(x1, z1, -lookout_angle)
+            if is_pipe_unique(xt, yt, EPSILON):
+              pillars.append([xt,yt, dist1])
+            #print(pillars)
+            pillars2.append([x1,z1])
           SECOND_GATE_STATE = 4
           
         
@@ -116,6 +132,12 @@ def next_tick(previous_state, next_gate_color, timeout):
           if angle > end_angle:
             turtle.reset_odometry()
             turtle.wait_for_odometry()
+            for i in range(0, count):
+              x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[i][1]), int(centroids[i][0]))
+              xt, yt = transform_coords(x1, z1, 0)
+              if is_pipe_unique(xt, yt, EPSILON):
+               pillars.append([xt,yt,dist1])
+              pillars2.append([x1, z1])
             SECOND_GATE_STATE = 5 
         
         if SECOND_GATE_STATE == 5: #Go or repeat
@@ -124,17 +146,27 @@ def next_tick(previous_state, next_gate_color, timeout):
             print(pillars)
             SECOND_GATE_STATE = 0
           else:
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
+            print("!!@#!@$!@#!@$!@#@!$!@#$!@")
             print("Ha! Found it anyway")
+            print(pillars2)
             print(pillars)
+            #cv2.waitKey(0)
+            pillars = sorted(pillars, key=lambda x: x[2])
             x1 = pillars[0][0]
             z1 = pillars[0][1]
             x2 = pillars[1][0]
             z2 = pillars[1][1]
-            print (x1,z1,x2,z2)
+            #print (x1,z1,x2,z2)
             pillars = []
             if x1 != math.nan and z1 != math.nan and x2 != math.nan and z2 != math.nan:
               print("=============================")
-              print("G1: [{}][{}] \nG2: [{}][{}]".format(x1, z1, x2, z2))
+              print("C1: [{}][{}] \nC2: [{}][{}]".format(x1, z1, x2, z2))
               angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
               print("angle1:\t", math.degrees(angle1), " deg")
               print("dist:\t", dist, " m")
@@ -203,14 +235,14 @@ def next_tick(previous_state, next_gate_color, timeout):
 
 
     if state == MEASURE_DISTANCE_TO_GATE:
-        print("len(centroids): ", len(centroids))
+        #print("len(centroids): ", len(centroids))
         if len(centroids) == 2:
           x1, y1, z1, dist1 = pc_to_distance(pc, int(centroids[0][1]), int(centroids[0][0]))
           x2, y2, z2, dist2 = pc_to_distance(pc, int(centroids[1][1]), int(centroids[1][0]))
-          print(x1, z1, x2, z2)
+          #print(x1, z1, x2, z2)
           if x1 != math.nan and y1 != math.nan and z1 != math.nan and x2 != math.nan and y2 != math.nan and z2 != math.nan:
               print("=============================")
-              print("G1: {} [{}][{}] \nG2: {} [{}][{}]".format(dist1, x1, z1, dist2, x2, z2))
+              print("C1: {} [{}][{}][{}] \nC2: {} [{}][{}][{}]".format(dist1, x1, z1, y1, dist2, x2, z2, y2))
               angle1, dist, angle2 = get_directions(x1, z1, x2, z2, 0.2)
               print("angle1:\t", math.degrees(angle1), " deg")
               print("dist:\t", dist, " m")
