@@ -59,8 +59,8 @@ def get_intersections(x0, y0, r0, x1, y1, r1):
         
         return (x3, y3, x4, y4)
 
-def get_distance_to_closest_object_of_color(image, pc, color):
-    _, _, _, centroids = get_objects_for_color(image, color)
+def get_distance_to_closest_object_of_color(image, pc, color, min_size):
+    _, _, _, centroids = get_objects_for_color(image, color, min_size)
     # print(f'{color} centroids: {centroids}')
 
     min_distance = math.inf
@@ -71,8 +71,8 @@ def get_distance_to_closest_object_of_color(image, pc, color):
 
     return min_distance
     
-def find_closest_gate_color(image, pc):
-    red_distance = get_distance_to_closest_object_of_color(image, pc, RED)
-    blue_distance = get_distance_to_closest_object_of_color(image, pc, BLUE)
+def find_closest_gate_color(image, pc, min_size):
+    red_distance = get_distance_to_closest_object_of_color(image, pc, RED, min_size)
+    blue_distance = get_distance_to_closest_object_of_color(image, pc, BLUE, min_size)
 
     return RED if red_distance < blue_distance else BLUE
