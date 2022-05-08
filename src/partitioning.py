@@ -4,13 +4,13 @@ import cv2
 from constants import RED, GREEN, BLUE 
 from drawing import draw_crosshairs_for_color, draw_center
 
-def remove_small_components(color_mask):
+def remove_small_components(color_mask, min_size):
     n_comp, output, stats, centroids = cv2.connectedComponentsWithStats(color_mask, connectivity=8)
 
     sizes = stats[1:, -1]
     n_comp = n_comp - 1
 
-    min_size = 6000
+    #min_size = 3600
 
     new = np.zeros((output.shape))
     new_n_components = 0
@@ -23,7 +23,7 @@ def remove_small_components(color_mask):
             new_n_components += 1
     return new, new_n_components, new_centroids
 
-def get_objects_for_color(image, color):
+def get_objects_for_color(image, color, min_size):
     blured_image = cv2.blur(image, (10, 10))
     hsv = cv2.cvtColor(blured_image, cv2.COLOR_BGR2HSV)
 
@@ -31,7 +31,7 @@ def get_objects_for_color(image, color):
     if color == GREEN: mask = cv2.inRange(hsv, (30, 50, 50), (80, 255, 255))
     if color == BLUE: mask = cv2.inRange(hsv, (92, 180, 50), (100, 255, 255))
 
-    filtered, count, centroids =  remove_small_components(mask)
+    filtered, count, centroids =  remove_small_components(mask, min_size)
 
     image = draw_crosshairs_for_color(image, count, centroids, color)
 
