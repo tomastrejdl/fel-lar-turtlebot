@@ -51,5 +51,4 @@ def get_directions(x1,y1,x2,y2,dist_from_gate):
     if abs(final_angle)>180:
         final_angle = -np.sign(final_angle)*(360-abs(final_angle))
 
-
-    return angle1, distance, final_angle, vector_angle
+    return math.radians(angle1), distance, math.radians(final_angle)
