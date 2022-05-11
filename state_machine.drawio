@@ -1,0 +1,231 @@
+<mxfile host="65bd71144e">
+    <diagram id="FbaZ4yoST_nSCe8nWehY" name="Page-1">
+        <mxGraphModel dx="1551" dy="1301" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="4" value="" style="edgeStyle=none;html=1;rounded=1;fontColor=#000000;" parent="1" source="2" target="3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;startFill=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;dashed=1;dashPattern=1 4;fillColor=#1ba1e2;strokeColor=#006EAF;strokeWidth=2;fontColor=#000000;" parent="1" source="2" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="73.99999999999989" y="284" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="74" y="109"/>
+                            <mxPoint x="74" y="579"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="38" value="souřadnice sloupků&lt;br&gt;v souřadném&lt;br&gt;systému robota" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#006EAF;labelBackgroundColor=none;" parent="37" vertex="1" connectable="0">
+                    <mxGeometry x="-0.3646" y="2" relative="1" as="geometry">
+                        <mxPoint x="64" y="347" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;DETECT_PIPES_IN_IMAGE&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="218" y="89" width="200" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="" style="edgeStyle=none;html=1;rounded=1;fontColor=#000000;" parent="1" source="3" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="43" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;startFill=1;endArrow=none;endFill=0;fontColor=#000000;" parent="1" source="3" target="42" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;LOOK_LEFT&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="268" y="169" width="100" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="edgeStyle=none;html=1;rounded=1;fontColor=#000000;" parent="1" source="7" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;startFill=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fillColor=#1ba1e2;strokeColor=#006EAF;strokeWidth=2;fontColor=#000000;" parent="1" source="7" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="104" y="414" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="74" y="269"/>
+                            <mxPoint x="74" y="579"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;DETECT_PIPES_IN_IMAGE_LEFT&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="198" y="249" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="" style="edgeStyle=none;html=1;rounded=1;fontColor=#000000;" parent="1" source="9" target="11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="45" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;fontSize=10;fontColor=#000000;startFill=1;endArrow=none;endFill=0;" parent="1" source="9" target="44" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;LOOK_RIGHT&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="258" y="329" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="edgeStyle=none;html=1;rounded=1;fontColor=#000000;" parent="1" source="11" target="13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="41" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;startFill=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fillColor=#1ba1e2;strokeColor=#006EAF;strokeWidth=2;fontColor=#000000;" parent="1" source="11" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="74" y="434" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="74" y="424"/>
+                            <mxPoint x="74" y="579"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="11" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;DETECT_PIPES_IN_IMAGE_RIGHT&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="198" y="409" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="13" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="47" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;fontSize=10;fontColor=#000000;startFill=1;endArrow=none;endFill=0;" parent="1" source="13" target="46" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;LOOK_BACK_TO_CENTER&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="228" y="489" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="15" target="29" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="50" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;fontSize=10;fontColor=#000000;startFill=1;endArrow=classic;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;fillColor=#60a917;strokeColor=#2D7600;strokeWidth=2;" parent="1" source="15" target="19" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="134" y="824" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="100" y="599"/>
+                            <mxPoint x="100" y="810"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="56" value="&lt;span style=&quot;color: rgb(45 , 118 , 0) ; font-size: 10px&quot;&gt;⍺&lt;/span&gt;&lt;sub style=&quot;color: rgb(45 , 118 , 0)&quot;&gt;1&lt;/sub&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;" vertex="1" connectable="0" parent="50">
+                    <mxGeometry x="0.6657" relative="1" as="geometry">
+                        <mxPoint x="7" y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="51" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;fontSize=10;fontColor=#000000;startFill=1;endArrow=classic;endFill=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;fillColor=#60a917;strokeColor=#2D7600;strokeWidth=2;" parent="1" source="15" target="21" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="153.9999999999999" y="764" as="targetPoint"/>
+                        <mxPoint x="204" y="594" as="sourcePoint"/>
+                        <Array as="points">
+                            <mxPoint x="100" y="599"/>
+                            <mxPoint x="100" y="890"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="57" value="&lt;span style=&quot;color: rgb(45 , 118 , 0) ; font-size: 10px&quot;&gt;C&lt;/span&gt;&lt;sub style=&quot;color: rgb(45 , 118 , 0)&quot;&gt;1&lt;/sub&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;" vertex="1" connectable="0" parent="51">
+                    <mxGeometry x="0.7533" y="-1" relative="1" as="geometry">
+                        <mxPoint x="-3" y="-11" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="52" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;fontSize=10;fontColor=#000000;startFill=1;endArrow=classic;endFill=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;strokeWidth=2;" parent="1" source="15" target="23" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="124" y="1004" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="100" y="599"/>
+                            <mxPoint x="100" y="970"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="53" value="vypočtené hodnoty&lt;br&gt;trajektorie&lt;br&gt;⍺&lt;sub&gt;1&lt;/sub&gt;, C&lt;sub&gt;1&lt;/sub&gt;, ⍺&lt;sub&gt;2&lt;/sub&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#2D7600;labelBackgroundColor=none;" parent="52" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8363" y="-1" relative="1" as="geometry">
+                        <mxPoint y="22" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="58" value="&lt;span style=&quot;color: rgb(45 , 118 , 0) ; font-size: 10px&quot;&gt;⍺&lt;/span&gt;&lt;sub style=&quot;color: rgb(45 , 118 , 0)&quot;&gt;2&lt;/sub&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;" vertex="1" connectable="0" parent="52">
+                    <mxGeometry x="0.7727" y="-3" relative="1" as="geometry">
+                        <mxPoint y="-13" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="15" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;line-height: 18px&quot;&gt;MEASURE_DISTANCE_TO_GATE&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="208" y="569" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" style="edgeStyle=none;rounded=1;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;jumpStyle=none;sketch=0;shadow=0;snapToPoint=0;flowAnimation=0;orthogonalLoop=0;orthogonal=0;comic=0;startFill=1;fontColor=#000000;" parent="1" source="17" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="614" y="109"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;line-height: 18px&quot;&gt;INCREASE_LOOKOUT_ANGLE&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="514" y="670" width="200" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="19" target="21" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; font-weight: normal; font-size: 12px; line-height: 18px;&quot;&gt;&lt;div&gt;&lt;span style=&quot;&quot;&gt;ROTATE_TOWARD_GATE&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="228" y="790" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="21" target="23" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; font-weight: normal; font-size: 12px; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;DRIVE_TOWARD_GATE&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="228" y="870" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="23" target="25" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; font-weight: normal; font-size: 12px; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;ROTATE_TO_FACE_GATE&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="228" y="950" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="25" target="27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;shadow=0;dashed=1;dashPattern=1 4;fontSize=10;fontColor=#000000;startFill=1;endArrow=none;endFill=0;" parent="1" source="25" target="48" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; font-weight: normal; font-size: 12px; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;DRIVE_THROUGH_GATE&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="228" y="1030" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" style="edgeStyle=none;rounded=1;comic=0;sketch=0;jumpStyle=none;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;shadow=0;startFill=1;fontColor=#000000;" parent="1" source="27" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="754" y="1130"/>
+                            <mxPoint x="754" y="109"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="27" value="&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot;, menlo, monaco, &amp;quot;courier new&amp;quot;, monospace; font-weight: normal; font-size: 12px; line-height: 18px;&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;&lt;div style=&quot;font-family: &amp;quot;fira code&amp;quot; , &amp;quot;menlo&amp;quot; , &amp;quot;monaco&amp;quot; , &amp;quot;courier new&amp;quot; , monospace ; line-height: 18px&quot;&gt;DETECT_NEXT_GATE_COLOR&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="218" y="1110" width="200" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" style="edgeStyle=none;rounded=1;html=1;fontColor=#000000;" parent="1" source="29" target="17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="NE" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;labelBackgroundColor=none;" parent="31" vertex="1" connectable="0">
+                    <mxGeometry x="-0.26" relative="1" as="geometry">
+                        <mxPoint y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="60" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontSize=11;strokeColor=default;" edge="1" parent="1" source="29" target="19">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" value="ANO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;fontColor=#000000;" vertex="1" connectable="0" parent="60">
+                    <mxGeometry x="-0.0923" y="1" relative="1" as="geometry">
+                        <mxPoint x="21" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="29" value="Nalezeny&lt;br&gt;alespoň&lt;br&gt;dva&lt;br&gt;sloupky?" style="rhombus;whiteSpace=wrap;html=1;rounded=0;labelBackgroundColor=none;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="258" y="630" width="120" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" value="&lt;font&gt;rotace o předdefinovaný úhel&lt;/font&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;rounded=0;labelBackgroundColor=none;size=14;fillColor=#FFFFFF;fontColor=#858585;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry x="448" y="160.25" width="106" height="57.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" value="rotace o předdefinovaný úhel" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;rounded=0;labelBackgroundColor=none;size=14;fillColor=#FFFFFF;fontColor=#858585;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry x="448" y="320.25" width="106" height="57.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" value="rotace o předdefinovaný úhel" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;rounded=0;labelBackgroundColor=none;size=14;fillColor=#FFFFFF;fontColor=#858585;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry x="448" y="480.25" width="106" height="57.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="pohyb dopředu &lt;br&gt;o předdefinovanou vzdálenost" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;rounded=0;labelBackgroundColor=none;size=14;fillColor=#FFFFFF;fontColor=#858585;strokeColor=#B3B3B3;" parent="1" vertex="1">
+                    <mxGeometry x="438" y="1021.25" width="132" height="57.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" style="edgeStyle=none;html=1;" edge="1" parent="1" source="54" target="2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" value="stisk tlačítka" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;labelBackgroundColor=none;" vertex="1" connectable="0" parent="55">
+                    <mxGeometry x="-0.0769" relative="1" as="geometry">
+                        <mxPoint x="42" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="54" value="&lt;div style=&quot;font-family: &amp;#34;fira code&amp;#34; , &amp;#34;menlo&amp;#34; , &amp;#34;monaco&amp;#34; , &amp;#34;courier new&amp;#34; , monospace ; line-height: 18px&quot;&gt;WAIT_FOR_BUTTON&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+                    <mxGeometry x="218" y="10" width="200" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
