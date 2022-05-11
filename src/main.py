@@ -10,8 +10,8 @@ from angle_dist_angle import *
 from show_depth import *
 from transform_coords import *
 
-isRunning = True
-turtle = Turtlebot(rgb=True, pc=True)
+isRunning = False
+turtle = Turtlebot(rgb = True, pc = True)
 
 
 def bumper_callback(msg):
@@ -23,9 +23,18 @@ def bumper_callback(msg):
         print("Bumber pressed. STOPPING...")
         global isRunning
         isRunning = False
-        turtle.cmd_velocity(linear=0)
-        turtle.cmd_velocity(angular=0)
+        turtle.cmd_velocity(linear = 0)
+        turtle.cmd_velocity(angular = 0)
         quit()
+
+def button_callback(event):
+    button_number = event.button  # event.button stores the id of button 0, 1 or 2
+    button_state = BUTTON_STATES[event.state]  # event.state stores the event 0:RELEASED, 1:PRESSED
+    
+    if button_state == "PRESSED":
+        print("Button {} pressed. Starting program...", button_number)
+        global isRunning
+        isRunning = True
 
 
 def get_objects_from_rgb_image(next_gate_color, min_size):
@@ -175,13 +184,22 @@ def main():
     print("Starting...")
 
     turtle.register_bumper_event_cb(bumper_callback)
+    turtle.register_button_event_cb(button_callback)
     turtle.reset_odometry()
 
     cv2.namedWindow(WINDOW)
     cv2.namedWindow("PC")
 
-    state = DETECT_PIPES_IN_IMAGE   # Starting state
-    next_gate_color = GREEN         # First gate is always GREEN
+    state = WAIT_FOR_BUTTON   # Starting state
+    print("Push any button ON THE ROBOT to start the program")
+
+    # Wait for the user to push a button on the robot to start the program
+    while isRunning == False:
+        cv2.waitKey(100)
+        pass
+
+    state = DETECT_PIPES_IN_IMAGE
+    next_gate_color = GREEN     # First gate is always GREEN
 
     pillars = []
     LOOKOUT_ANGLE = 35
@@ -246,8 +264,8 @@ def main():
     turtle.play_sound(1)
 
     # Stop moving before exiting program
-    turtle.cmd_velocity(linear=0)
-    turtle.cmd_velocity(angular=0)
+    turtle.cmd_velocity(linear = 0)
+    turtle.cmd_velocity(angular = 0)
 
 
 if __name__ == "__main__":
