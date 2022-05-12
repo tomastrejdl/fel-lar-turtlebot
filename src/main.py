@@ -185,7 +185,6 @@ def main():
 
     turtle.register_bumper_event_cb(bumper_callback)
     turtle.register_button_event_cb(button_callback)
-    turtle.reset_odometry()
 
     cv2.namedWindow(WINDOW)
     cv2.namedWindow("PC")
@@ -197,6 +196,8 @@ def main():
     while isRunning == False:
         cv2.waitKey(100)
         pass
+
+    turtle.reset_odometry()
 
     state = DETECT_PIPES_IN_IMAGE
     next_gate_color = GREEN     # First gate is always GREEN
