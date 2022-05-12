@@ -251,7 +251,7 @@ def main():
             state, next_gate_color = detect_next_gate_color(next_gate_color, image, pc, min_size)
             pillars = []
             LOOKOUT_ANGLE = 35
-            min_size = 5000
+            min_size = 3200
 
         print(f'Pillars: {pillars}')
 
